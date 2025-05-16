@@ -1,8 +1,9 @@
 import React from "react";
 
-function MainContent({ jogos, setJogoDestaque }) {
+function MainContent({ jogos, jogosESPN, jogosESPNInglesa, setJogoDestaque }) {
   return (
     <main className="content">
+      {/* JOGOS LOCAIS */}
       <h2 className="titulo-centralizado">Jogos de Hoje</h2>
 
       <div className="jogos-lista">
@@ -36,8 +37,67 @@ function MainContent({ jogos, setJogoDestaque }) {
           </div>
         ))}
       </div>
+
+      {/* JOGOS ESPN PORTUGAL */}
+      <h2 className="titulo-centralizado">Jogos em Tempo Real (Liga Portuguesa - ESPN)</h2>
+
+      <div className="jogos-lista">
+        {jogosESPN.map((jogo, index) => (
+          <div
+            key={index}
+            className="jogo-card-preview claro"
+            onClick={() => setJogoDestaque(jogo)}
+          >
+            <span className="hora-preview">
+              {jogo.hora ? jogo.hora.slice(11, 16) : "—"}
+            </span>
+
+            <div className="equipa-linha">
+              <span className="nome-equipa">{jogo.equipa_casa}</span>
+            </div>
+
+            <span className="vs-central">VS</span>
+
+            <div className="equipa-linha">
+              <span className="nome-equipa">{jogo.equipa_fora}</span>
+            </div>
+
+            <span className="estado-jogo">{jogo.estado}</span>
+          </div>
+        ))}
+      </div>
+
+      {/* JOGOS ESPN PREMIER LEAGUE */}
+      <h2 className="titulo-centralizado">Jogos em Tempo Real (Premier League - ESPN)</h2>
+
+      <div className="jogos-lista">
+        {jogosESPNInglesa.map((jogo, index) => (
+          <div
+            key={index}
+            className="jogo-card-preview claro"
+            onClick={() => setJogoDestaque(jogo)}
+          >
+            <span className="hora-preview">
+              {jogo.hora ? jogo.hora.slice(11, 16) : "—"}
+            </span>
+
+            <div className="equipa-linha">
+              <span className="nome-equipa">{jogo.equipa_casa}</span>
+            </div>
+
+            <span className="vs-central">VS</span>
+
+            <div className="equipa-linha">
+              <span className="nome-equipa">{jogo.equipa_fora}</span>
+            </div>
+
+            <span className="estado-jogo">{jogo.estado}</span>
+          </div>
+        ))}
+      </div>
     </main>
   );
 }
 
 export default MainContent;
+

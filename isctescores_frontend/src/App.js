@@ -15,13 +15,30 @@ import './App.css';
 
 function HomePage() {
   const [jogos, setJogos] = useState([]);
+  const [jogosESPN, setJogosESPN] = useState([]);
+  const [jogosESPNInglesa, setJogosESPNInglesa] = useState([]);
   const [ligaSelecionada, setLigaSelecionada] = useState("");
   const { setJogoDestaque } = useContext(DestaqueContext);
 
+  // Jogos locais (base de dados Django)
   useEffect(() => {
     axios.get("http://127.0.0.1:8000/jogos/api/jogos/")
       .then(res => setJogos(res.data))
-      .catch(err => console.error(err));
+      .catch(err => console.error("Erro BD:", err));
+  }, []);
+
+  // Jogos ESPN Liga Portuguesa
+  useEffect(() => {
+    axios.get("http://127.0.0.1:8000/jogos/api/jogos_espn/")
+      .then(res => setJogosESPN(res.data))
+      .catch(err => console.error("Erro ESPN Portugal:", err));
+  }, []);
+
+  // Jogos ESPN Premier League
+  useEffect(() => {
+    axios.get("http://127.0.0.1:8000/jogos/api/jogos_espn_inglesa/")
+      .then(res => setJogosESPNInglesa(res.data))
+      .catch(err => console.error("Erro ESPN Inglesa:", err));
   }, []);
 
   const jogosFiltrados = ligaSelecionada
@@ -36,7 +53,12 @@ function HomePage() {
           onSelectCompeticao={setLigaSelecionada}
           ligaSelecionada={ligaSelecionada}
         />
-        <MainContent jogos={jogosFiltrados} setJogoDestaque={setJogoDestaque} />
+        <MainContent
+          jogos={jogosFiltrados}
+          jogosESPN={jogosESPN}
+          jogosESPNInglesa={jogosESPNInglesa}
+          setJogoDestaque={setJogoDestaque}
+        />
         <SidebarRight />
       </div>
       <Footer />
@@ -56,3 +78,4 @@ function App() {
 }
 
 export default App;
+
