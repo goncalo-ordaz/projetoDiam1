@@ -8,7 +8,9 @@ function getCSRFToken() {
 }
 
 function Login() {
+  const [modo, setModo] = useState('login');
   const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -29,11 +31,27 @@ function Login() {
     }
   };
 
+  const handleRegisto = async () => {
+    try {
+      await axios.get('http://localhost:8000/api/csrf/', { withCredentials: true });
+      await axios.post('http://localhost:8000/api/registar/', { username, password }, {
+        withCredentials: true,
+        headers: { 'X-CSRFToken': getCSRFToken() }
+      });
+
+      alert("Utilizador registado com sucesso!");
+      setModo('login');
+    } catch (error) {
+      console.error('Erro ao registar:', error);
+      setError('Erro ao registar utilizador');
+    }
+  };
+
   return (
     <div className="login-container">
       <div className="login-card">
         <img src="/images/logo.png" alt="Logo ISCTESCORES" className="login-logo" />
-        <h2>Iniciar Sessão</h2>
+        <h2>{modo === 'login' ? 'Iniciar Sessão' : 'Registar Conta'}</h2>
 
         <input
           type="email"
@@ -41,6 +59,14 @@ function Login() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+        {modo === 'registo' && (
+          <input
+            type="text"
+            placeholder="Nome de utilizador"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
+        )}
         <input
           type="password"
           placeholder="Senha"
@@ -48,9 +74,15 @@ function Login() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
-        <button onClick={handleLogin}>Entrar</button>
+        <button onClick={modo === 'login' ? handleLogin : handleRegisto}>
+          {modo === 'login' ? 'Entrar' : 'Registar'}
+        </button>
 
         {error && <p className="error-msg">{error}</p>}
+
+        <p style={{ marginTop: '1rem', cursor: 'pointer' }} onClick={() => setModo(modo === 'login' ? 'registo' : 'login')}>
+          {modo === 'login' ? 'Ainda não tens conta? Regista-te' : 'Já tens conta? Inicia sessão'}
+        </p>
       </div>
     </div>
   );

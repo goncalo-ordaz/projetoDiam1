@@ -1,54 +1,49 @@
-import React, { useState, useEffect } from "react";
 
-const SidebarLeft = ({ onSelectCompeticao, ligaSelecionada }) => {
-  const ligas = [
-    { nome: "Premier League", img: "/images/premier.png" },
-    { nome: "Champions League", img: "/images/champions.png" },
-    { nome: "La Liga", img: "/images/laliga.png" },
-    { nome: "Bundesliga", img: "/images/bundesliga.png" },
-  ];
+import React from "react";
+import "../App.css";
 
-  const slides = [
-    "/images/solverde.jpg",
-    "/images/betano.jpg",
-    "/images/betclicP.jpg",
-  ];
-
-  const [indexAtual, setIndexAtual] = useState(0);
-
-  useEffect(() => {
-    const intervalo = setInterval(() => {
-      setIndexAtual((prevIndex) => (prevIndex + 1) % slides.length);
-    }, 4000);
-
-    return () => clearInterval(intervalo);
-  }, []); // <- ✅ Correção aqui
-
+function SidebarLeft({ onSelectCompeticao, ligaSelecionada }) {
   return (
     <aside className="sidebar-left">
       <ul>
-        {ligas.map((liga) => (
-          <li key={liga.nome}>
-            <button
-              className={ligaSelecionada === liga.nome ? "active" : ""}
-              onClick={() => onSelectCompeticao(liga.nome)}
-            >
-              <img src={liga.img} alt={liga.nome} />
-              {liga.nome}
-            </button>
-          </li>
-        ))}
+        <li>
+          <button
+            className={ligaSelecionada === "Liga Betclic" ? "active" : ""}
+            onClick={() => onSelectCompeticao("Liga Betclic")}
+          >
+            <img src="/images/ligaportuguesa.png" alt="Liga Betclic" />
+            Liga Betclic
+          </button>
+        </li>
+        <li>
+          <button
+            className={ligaSelecionada === "Premier League" ? "active" : ""}
+            onClick={() => onSelectCompeticao("Premier League")}
+          >
+            <img src="/images/premierleague.png" alt="Premier League" />
+            Premier League
+          </button>
+        </li>
+        <li>
+          <button
+            className={ligaSelecionada === "Bundesliga" ? "active" : ""}
+            onClick={() => onSelectCompeticao("Bundesliga")}
+          >
+            <img src="/images/bundesliga.png" alt="Bundesliga" />
+            Bundesliga
+          </button>
+        </li>
+        <li>
+          <button
+            className={ligaSelecionada === "Favoritos" ? "active" : ""}
+            onClick={() => onSelectCompeticao("Favoritos")}
+          >
+            ⭐ Favoritos
+          </button>
+        </li>
       </ul>
-
-      <div className="anuncios">
-        <img
-          src={slides[indexAtual]}
-          alt="Publicidade"
-          className="anuncio-img"
-        />
-      </div>
     </aside>
   );
-};
+}
 
 export default SidebarLeft;

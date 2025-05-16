@@ -1,6 +1,6 @@
 from django.urls import path
 from . import views
-from .views import LigaListAPIView
+from .views import LigaListAPIView, registar_utilizador
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import JsonResponse
 from .views import jogos_espn_inglesa
@@ -22,5 +22,10 @@ urlpatterns = [
     # 🟢 ESPN Jogos em tempo real
     path('api/jogos_espn/', views.jogos_espn),
     path('api/jogos_espn_inglesa/', jogos_espn_inglesa),
+
+path('api/jogos_espn_bundesliga/', views.jogos_espn_bundesliga),
+    path('api/registar/', registar_utilizador, name='registar'),
+
+path('api/logout/', views.logout_view),
 
 ]

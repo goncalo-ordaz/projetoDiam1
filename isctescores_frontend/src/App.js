@@ -1,3 +1,4 @@
+
 import { useEffect, useState, useContext } from "react";
 import { Routes, Route } from "react-router-dom";
 import axios from "axios";
@@ -10,54 +11,58 @@ import MainContent from "./components/Maincontent";
 import Login from "./components/Login";
 
 import { DestaqueProvider, DestaqueContext } from "./context/DestaqueContext";
+import { FavoritosProvider } from "./context/FavoritosContext";
 
 import './App.css';
 
 function HomePage() {
-  const [jogos, setJogos] = useState([]);
   const [jogosESPN, setJogosESPN] = useState([]);
   const [jogosESPNInglesa, setJogosESPNInglesa] = useState([]);
+  const [jogosESPNBundesliga, setJogosESPNBundesliga] = useState([]);
   const [ligaSelecionada, setLigaSelecionada] = useState("");
   const { setJogoDestaque } = useContext(DestaqueContext);
 
-  // Jogos locais (base de dados Django)
-  useEffect(() => {
-    axios.get("http://127.0.0.1:8000/jogos/api/jogos/")
-      .then(res => setJogos(res.data))
-      .catch(err => console.error("Erro BD:", err));
-  }, []);
-
-  // Jogos ESPN Liga Portuguesa
   useEffect(() => {
     axios.get("http://127.0.0.1:8000/jogos/api/jogos_espn/")
-      .then(res => setJogosESPN(res.data))
+      .then(res => {
+        const comComp = res.data.map(j => ({ ...j, comp: "Liga Betclic" }));
+        setJogosESPN(comComp);
+      })
       .catch(err => console.error("Erro ESPN Portugal:", err));
   }, []);
 
-  // Jogos ESPN Premier League
   useEffect(() => {
     axios.get("http://127.0.0.1:8000/jogos/api/jogos_espn_inglesa/")
-      .then(res => setJogosESPNInglesa(res.data))
+      .then(res => {
+        const comComp = res.data.map(j => ({ ...j, comp: "Premier League" }));
+        setJogosESPNInglesa(comComp);
+      })
       .catch(err => console.error("Erro ESPN Inglesa:", err));
   }, []);
 
-  const jogosFiltrados = ligaSelecionada
-    ? jogos.filter(j => j.comp === ligaSelecionada)
-    : jogos;
+  useEffect(() => {
+    axios.get("http://127.0.0.1:8000/jogos/api/jogos_espn_bundesliga/")
+      .then(res => {
+        const comComp = res.data.map(j => ({ ...j, comp: "Bundesliga" }));
+        setJogosESPNBundesliga(comComp);
+      })
+      .catch(err => console.error("Erro ESPN Bundesliga:", err));
+  }, []);
 
   return (
     <div className="container">
-      <Header resetCompeticao={() => setLigaSelecionada("")} logoSize="large" />
+      <Header resetCompeticao={setLigaSelecionada} logoSize="large" />
       <div className="main">
         <SidebarLeft
           onSelectCompeticao={setLigaSelecionada}
           ligaSelecionada={ligaSelecionada}
         />
         <MainContent
-          jogos={jogosFiltrados}
           jogosESPN={jogosESPN}
           jogosESPNInglesa={jogosESPNInglesa}
+          jogosESPNBundesliga={jogosESPNBundesliga}
           setJogoDestaque={setJogoDestaque}
+          ligaSelecionada={ligaSelecionada}
         />
         <SidebarRight />
       </div>
@@ -69,13 +74,14 @@ function HomePage() {
 function App() {
   return (
     <DestaqueProvider>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<Login />} />
-      </Routes>
+      <FavoritosProvider>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </FavoritosProvider>
     </DestaqueProvider>
   );
 }
 
 export default App;
-
