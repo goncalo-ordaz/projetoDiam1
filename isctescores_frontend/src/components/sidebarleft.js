@@ -1,4 +1,3 @@
-
 import React from "react";
 import "../App.css";
 
@@ -33,6 +32,27 @@ function SidebarLeft({ onSelectCompeticao, ligaSelecionada }) {
             Bundesliga
           </button>
         </li>
+        <li>
+          <button
+            className={ligaSelecionada === "La Liga" ? "active" : ""}
+            onClick={() => onSelectCompeticao("La Liga")}
+          >
+            <img src="/images/laliga.png" alt="La Liga" />
+            La Liga
+          </button>
+        </li>
+
+        <li>
+  <button
+    className={ligaSelecionada === "Serie A" ? "active" : ""}
+    onClick={() => onSelectCompeticao("Serie A")}
+  >
+    <img src="/images/seriea.png" alt="Serie A" />
+    Serie A
+  </button>
+</li>
+
+
         <li>
           <button
             className={ligaSelecionada === "Favoritos" ? "active" : ""}

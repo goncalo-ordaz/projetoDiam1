@@ -1,8 +1,8 @@
-
 import React from "react";
 import { useFavoritos } from "../context/FavoritosContext";
 
-function MainContent({ jogosESPN, jogosESPNInglesa, jogosESPNBundesliga, setJogoDestaque, ligaSelecionada }) {
+function MainContent({ jogosESPN, jogosESPNInglesa, jogosESPNBundesliga, jogosESPNEspanha, jogosESPNTaliana, setJogoDestaque, ligaSelecionada }) {
+
   const { favoritos, toggleFavorito } = useFavoritos();
 
   const isFavorito = (jogo) => {
@@ -14,29 +14,29 @@ function MainContent({ jogosESPN, jogosESPNInglesa, jogosESPNBundesliga, setJogo
   };
 
   const logoPath = (nome) => {
-  if (!nome) return "/images/default.png";
+    if (!nome) return "/images/default.png";
 
-  const map = {
-    "Brighton & Hove Albion": "brighton",
-    "Manchester City": "city",
-    "West Ham United": "westham",
-    "Nottingham Forest": "nottingham",
-    "Leicester City": "leicester",
-    "Ipswich Town": "ipswich",
-    "Newcastle United": "newcastle",
-    "Crystal Palace": "crystalpalace",
-    "Wolverhampton Wanderers": "wolves",
-    "AFC Bournemouth": "bournemouth",
-    "Premier League": "premier",
-    // adiciona mais mapeamentos se necessário
+    const map = {
+      "Brighton & Hove Albion": "brighton",
+      "Manchester City": "city",
+      "West Ham United": "westham",
+      "Nottingham Forest": "nottingham",
+      "Leicester City": "leicester",
+      "Ipswich Town": "ipswich",
+      "Newcastle United": "newcastle",
+      "Crystal Palace": "crystalpalace",
+      "Wolverhampton Wanderers": "wolves",
+      "AFC Bournemouth": "bournemouth",
+      "Premier League": "premier",
+      // podes adicionar mais nomes mapeados se necessário
+    };
+
+    const baseName = map[nome] || nome.toLowerCase()
+      .replace(/[\s&.']/g, "")
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+    return `/images/${baseName}`;
   };
-
-  const baseName = map[nome] || nome.toLowerCase().replace(/[\s&.']/g, "").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-  // Tenta .png primeiro, se não der, tenta .webp
-  return `/images/${baseName}`;
-};
-
 
   const renderJogoCard = (jogo, index) => (
     <div
@@ -45,41 +45,43 @@ function MainContent({ jogosESPN, jogosESPNInglesa, jogosESPNBundesliga, setJogo
       onClick={() => setJogoDestaque(jogo)}
     >
       <span className="hora-preview">{jogo.hora.slice(11, 16)}</span>
+
       <div className="equipa-linha">
-       <img
+        <img
           src={`${logoPath(jogo.equipa_casa)}.png`}
           alt={jogo.equipa_casa}
           className="escudo-pequeno"
           onError={(e) => {
-          const fallbackWebp = logoPath(jogo.equipa_casa) + ".webp";
-              if (!e.target.src.endsWith(".webp")) {
-                    e.target.src = fallbackWebp;
+            const fallbackWebp = logoPath(jogo.equipa_casa) + ".webp";
+            if (!e.target.src.endsWith(".webp")) {
+              e.target.src = fallbackWebp;
             } else {
-                e.target.src = "/images/default.png";
+              e.target.src = "/images/default.png";
             }
-        }}
-    />
-
-
+          }}
+        />
         <span className="nome-equipa">{jogo.equipa_casa}</span>
       </div>
+
       <span className="vs-central">VS</span>
+
       <div className="equipa-linha">
         <img
-  src={`${logoPath(jogo.equipa_fora)}.png`}
-  alt={jogo.equipa_fora}
-  className="escudo-pequeno"
-  onError={(e) => {
-    const fallbackWebp = logoPath(jogo.equipa_fora) + ".webp";
-    if (!e.target.src.endsWith(".webp")) {
-      e.target.src = fallbackWebp;
-    } else {
-      e.target.src = "/images/default.png";
-    }
-  }}
-/>
+          src={`${logoPath(jogo.equipa_fora)}.png`}
+          alt={jogo.equipa_fora}
+          className="escudo-pequeno"
+          onError={(e) => {
+            const fallbackWebp = logoPath(jogo.equipa_fora) + ".webp";
+            if (!e.target.src.endsWith(".webp")) {
+              e.target.src = fallbackWebp;
+            } else {
+              e.target.src = "/images/default.png";
+            }
+          }}
+        />
         <span className="nome-equipa">{jogo.equipa_fora}</span>
       </div>
+
       <span
         onClick={(e) => {
           e.stopPropagation();
@@ -130,6 +132,25 @@ function MainContent({ jogosESPN, jogosESPNInglesa, jogosESPNBundesliga, setJogo
           <h2 className="titulo-centralizado">Jogos Bundesliga (ESPN)</h2>
           <div className="jogos-lista">
             {jogosESPNBundesliga.map(renderJogoCard)}
+          </div>
+        </>
+      )}
+
+    {ligaSelecionada === "Serie A" && (
+  <>
+    <h2 className="titulo-centralizado">Jogos Serie A (ESPN)</h2>
+    <div className="jogos-lista">
+      {jogosESPNTaliana.map(renderJogoCard)}
+    </div>
+  </>
+)}
+
+
+      {ligaSelecionada === "La Liga" && (
+        <>
+          <h2 className="titulo-centralizado">Jogos La Liga (ESPN)</h2>
+          <div className="jogos-lista">
+            {jogosESPNEspanha.map(renderJogoCard)}
           </div>
         </>
       )}

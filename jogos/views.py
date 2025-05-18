@@ -150,6 +150,64 @@ def jogos_espn_inglesa(request):
 
     return Response(jogos)
 
+@api_view(['GET'])
+def jogos_espn_espanha(request):
+    base_url = "http://site.api.espn.com/apis/site/v2/sports/soccer/esp.1/scoreboard"
+    hoje = date.today()
+    jogos = []
+
+    for i in range(5):  # próximos 5 dias
+        data_str = (hoje + timedelta(days=i)).strftime("%Y%m%d")
+        response = requests.get(f"{base_url}?dates={data_str}")
+        if response.status_code != 200:
+            continue
+        data = response.json()
+        eventos = data.get("events", [])
+
+        for evento in eventos:
+            try:
+                competidores = evento["competitions"][0]["competitors"]
+                jogo = {
+                    "equipa_casa": competidores[0]["team"]["displayName"],
+                    "equipa_fora": competidores[1]["team"]["displayName"],
+                    "estado": evento["status"]["type"]["description"],
+                    "hora": evento["date"],
+                }
+                jogos.append(jogo)
+            except (KeyError, IndexError):
+                continue
+
+    return Response(jogos)
+
+@api_view(['GET'])
+def jogos_espn_italiana(request):
+    base_url = "http://site.api.espn.com/apis/site/v2/sports/soccer/ita.1/scoreboard"
+    hoje = date.today()
+    jogos = []
+
+    for i in range(5):  # próximos 5 dias
+        data_str = (hoje + timedelta(days=i)).strftime("%Y%m%d")
+        response = requests.get(f"{base_url}?dates={data_str}")
+        if response.status_code != 200:
+            continue
+        data = response.json()
+        eventos = data.get("events", [])
+
+        for evento in eventos:
+            try:
+                competidores = evento["competitions"][0]["competitors"]
+                jogo = {
+                    "equipa_casa": competidores[0]["team"]["displayName"],
+                    "equipa_fora": competidores[1]["team"]["displayName"],
+                    "estado": evento["status"]["type"]["description"],
+                    "hora": evento["date"],
+                }
+                jogos.append(jogo)
+            except (KeyError, IndexError):
+                continue
+
+    return Response(jogos)
+
 
 from django.contrib.auth.models import User
 

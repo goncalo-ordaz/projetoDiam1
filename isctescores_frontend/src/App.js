@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useContext } from "react";
 import { Routes, Route } from "react-router-dom";
 import axios from "axios";
@@ -19,6 +18,8 @@ function HomePage() {
   const [jogosESPN, setJogosESPN] = useState([]);
   const [jogosESPNInglesa, setJogosESPNInglesa] = useState([]);
   const [jogosESPNBundesliga, setJogosESPNBundesliga] = useState([]);
+  const [jogosESPNEspanha, setJogosESPNEspanha] = useState([]); // 🆕 La Liga
+  const [jogosESPNTaliana, setJogosESPNTaliana] = useState([]);
   const [ligaSelecionada, setLigaSelecionada] = useState("");
   const { setJogoDestaque } = useContext(DestaqueContext);
 
@@ -49,6 +50,25 @@ function HomePage() {
       .catch(err => console.error("Erro ESPN Bundesliga:", err));
   }, []);
 
+  useEffect(() => {
+    axios.get("http://127.0.0.1:8000/jogos/api/jogos_espn_espanha/")
+      .then(res => {
+        const comComp = res.data.map(j => ({ ...j, comp: "La Liga" }));
+        setJogosESPNEspanha(comComp);
+      })
+      .catch(err => console.error("Erro ESPN Espanha:", err));
+  }, []);
+
+  useEffect(() => {
+  axios.get("http://127.0.0.1:8000/jogos/api/jogos_espn_italiana/")
+    .then(res => {
+      const comComp = res.data.map(j => ({ ...j, comp: "Serie A" }));
+      setJogosESPNTaliana(comComp);
+    })
+    .catch(err => console.error("Erro ESPN Italiana:", err));
+}, []);
+
+
   return (
     <div className="container">
       <Header resetCompeticao={setLigaSelecionada} logoSize="large" />
@@ -61,6 +81,8 @@ function HomePage() {
           jogosESPN={jogosESPN}
           jogosESPNInglesa={jogosESPNInglesa}
           jogosESPNBundesliga={jogosESPNBundesliga}
+          jogosESPNEspanha={jogosESPNEspanha} // 🆕 enviado ao componente
+          jogosESPNTaliana={jogosESPNTaliana}
           setJogoDestaque={setJogoDestaque}
           ligaSelecionada={ligaSelecionada}
         />
