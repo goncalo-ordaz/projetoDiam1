@@ -14,8 +14,29 @@ function MainContent({ jogosESPN, jogosESPNInglesa, jogosESPNBundesliga, setJogo
   };
 
   const logoPath = (nome) => {
-    return `/images/${nome.toLowerCase().replace(/ /g, "_")}.png`;
+  if (!nome) return "/images/default.png";
+
+  const map = {
+    "Brighton & Hove Albion": "brighton",
+    "Manchester City": "city",
+    "West Ham United": "westham",
+    "Nottingham Forest": "nottingham",
+    "Leicester City": "leicester",
+    "Ipswich Town": "ipswich",
+    "Newcastle United": "newcastle",
+    "Crystal Palace": "crystalpalace",
+    "Wolverhampton Wanderers": "wolves",
+    "AFC Bournemouth": "bournemouth",
+    "Premier League": "premier",
+    // adiciona mais mapeamentos se necessário
   };
+
+  const baseName = map[nome] || nome.toLowerCase().replace(/[\s&.']/g, "").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+  // Tenta .png primeiro, se não der, tenta .webp
+  return `/images/${baseName}`;
+};
+
 
   const renderJogoCard = (jogo, index) => (
     <div
@@ -25,12 +46,38 @@ function MainContent({ jogosESPN, jogosESPNInglesa, jogosESPNBundesliga, setJogo
     >
       <span className="hora-preview">{jogo.hora.slice(11, 16)}</span>
       <div className="equipa-linha">
-        <img src={logoPath(jogo.equipa_casa)} alt={jogo.equipa_casa} className="escudo-pequeno" />
+       <img
+          src={`${logoPath(jogo.equipa_casa)}.png`}
+          alt={jogo.equipa_casa}
+          className="escudo-pequeno"
+          onError={(e) => {
+          const fallbackWebp = logoPath(jogo.equipa_casa) + ".webp";
+              if (!e.target.src.endsWith(".webp")) {
+                    e.target.src = fallbackWebp;
+            } else {
+                e.target.src = "/images/default.png";
+            }
+        }}
+    />
+
+
         <span className="nome-equipa">{jogo.equipa_casa}</span>
       </div>
       <span className="vs-central">VS</span>
       <div className="equipa-linha">
-        <img src={logoPath(jogo.equipa_fora)} alt={jogo.equipa_fora} className="escudo-pequeno" />
+        <img
+  src={`${logoPath(jogo.equipa_fora)}.png`}
+  alt={jogo.equipa_fora}
+  className="escudo-pequeno"
+  onError={(e) => {
+    const fallbackWebp = logoPath(jogo.equipa_fora) + ".webp";
+    if (!e.target.src.endsWith(".webp")) {
+      e.target.src = fallbackWebp;
+    } else {
+      e.target.src = "/images/default.png";
+    }
+  }}
+/>
         <span className="nome-equipa">{jogo.equipa_fora}</span>
       </div>
       <span

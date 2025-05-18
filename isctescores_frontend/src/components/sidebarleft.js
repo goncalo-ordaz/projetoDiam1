@@ -11,7 +11,7 @@ function SidebarLeft({ onSelectCompeticao, ligaSelecionada }) {
             className={ligaSelecionada === "Liga Betclic" ? "active" : ""}
             onClick={() => onSelectCompeticao("Liga Betclic")}
           >
-            <img src="/images/ligaportuguesa.png" alt="Liga Betclic" />
+            <img src="/images/betclicP.jpg" alt="Liga Betclic" />
             Liga Betclic
           </button>
         </li>
@@ -20,7 +20,7 @@ function SidebarLeft({ onSelectCompeticao, ligaSelecionada }) {
             className={ligaSelecionada === "Premier League" ? "active" : ""}
             onClick={() => onSelectCompeticao("Premier League")}
           >
-            <img src="/images/premierleague.png" alt="Premier League" />
+            <img src="/images/premier.png" alt="Premier League" />
             Premier League
           </button>
         </li>
